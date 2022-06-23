@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="game1.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <title>Sign Up</title>
+   
+    
+</head>
+<body>
+     <div class="header normal">
+        <!--<p><a id="gb" href="index.html">GO BACK</a></p>-->
+        <h1 id="title">Sudoku</h1>
+    </div>
+    <div class="signup" style="width:100%; height:80%; display:flex; justify-content:center;align-items:center; flex-direction:column">
+        <form action="http://localhost:3001/api/signup" method="POST">
+        <h3 style="text-align:center;">Sign Up</h3>
+         <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name">
+    
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" class="form-control" id="email" name="email">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password">
+        </div>
+        <!--<div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+            <label class="form-check-label" for="exampleCheck1">Check me out</label>
+        </div>-->
+        <button type="submit"  class="btn btn-primary" style="background-color:blueviolet; border-color: blueviolet;">Sign Up</button>
+        <div class="mb-3">
+            <p style="position:relative; top:2vh;">Ai deja cont? Logheaza-te atunci aici <a href="login.html">Login</a></p>
+        </div>
+        
+        </form>
+    </div>
+   
+    
+    <script>
+      
+        
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    
+    
+    
+</body>
+</html>

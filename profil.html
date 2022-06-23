@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil</title>
+    <link rel="stylesheet" href="profil.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 48
+        }
+    </style>
+    <script>
+        const redirectMain = () =>{
+            window.location.href="game.html";
+        }
+    </script>
+    <script src="profil.js"></script>
+</head>
+<body>
+    <div class="header normal">
+        <!--<p><a id="gb" href="index.html">GO BACK</a></p>-->
+        <h1 id="title">Sudoku</h1>    
+    </div>
+    <div class="btn purple go-back in-main" id="btn-return-game-screen" onclick="redirectMain()">
+        <span class="material-symbols-outlined">
+            arrow_back
+        </span>
+    </div>
+    <div class="container">
+        <h1>Profil</h1>
+        <h2>Informatii generale</h2>
+        <div id="det">Id: <span class="id" id="complete"></span></div>
+        <div id="det" >Nume: <span class="name" id="complete"></span></div>
+        <div id="det" >Email: <span class="email" id="complete"></span></div>
+        <h2>Scor</h2>
+        <div id="det" >Easy: <span class="easy" id="complete"></span></div>
+        <div id="det" >Medium: <span class="medium" id="complete"></span></div>
+        <div id="det" >Hard: <span class="hard" id="complete"></span></div>
+        <div id="det" >Very Hard: <span class="veryhard" id="complete"></span></div>
+        <div id="det" >Insane: <span class="insane" id="complete"></span></div>
+        <div id="det" >Inhuman: <span  class="inhuman" id="complete"></span></div>
+        
+        <form action="http://localhost:3001/delete/cookies/" method="GET">
+            <button class="btn adjust purple">Log Out</button>
+        </form>
+        
+    </div>
+</body>
+</html>
