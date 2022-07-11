@@ -18,6 +18,7 @@ const result_screen = document.querySelector('#result-screen');
 const result_time = document.querySelector('#result-time')
 const body = document.querySelector('.body');
 const profil = document.querySelector('.profil');
+const search = document.querySelector('.search');
 const header = document.querySelector('.header');
 
 let timer=null;
@@ -84,6 +85,7 @@ const returnStartScreen = () =>{
     game_screen.classList.remove('active');
     start_screen.classList.add('active');
     profil.classList.add('active');
+    search.classList.add('active');
     body.classList.add('active');
     
 }
@@ -396,6 +398,7 @@ document.querySelector('#btn-continue').addEventListener('click', () => {
         result_screen.classList.remove('active');
     start_screen.classList.remove('active');
     profil.classList.remove('active');
+    search.classList.remove('active');
     body.classList.remove('active');
     game_screen.classList.add('active');
     document.querySelector('.header').classList.remove('normal');
@@ -438,6 +441,7 @@ document.querySelector('#btn-delete').addEventListener('click',()=>{
 document.querySelector('.btn.new-game').addEventListener('click', ()=>{
     start_screen.classList.remove('active');
     profil.classList.remove('active');
+    search.classList.remove('active');
     body.classList.remove('active');
     if(instruction_screen.classList.contains('active'))
         instruction_screen.classList.remove('active');
@@ -449,12 +453,14 @@ document.querySelector('.btn.new-game').addEventListener('click', ()=>{
     //removeGameInfo();
     document.querySelector('.header').classList.remove('normal');
     document.querySelector('.contacts').classList.remove('active');
+    
     savedGameInfo=false;
     startGame();
 })
 document.querySelector('#instruction-show').addEventListener('click', ()=>{
     start_screen.classList.remove('active');
     profil.classList.remove('active');
+    search.classList.remove('active');
     body.classList.remove('active');
     if(instruction_screen.classList.contains('active'))
         instruction_screen.classList.remove('active');
@@ -464,11 +470,14 @@ document.querySelector('#instruction-show').addEventListener('click', ()=>{
     if(result_screen.classList.contains('active'))
         result_screen.classList.remove('active');
      document.querySelector('.header').classList.remove('normal');
+     profil.classList.remove('active');
+     search.classList.remove('active');
     ///eroare apare in game screen meniul intrcutiou] de rezolvat
 })
 document.querySelector('#btn-go-back').addEventListener('click',()=>{
     start_screen.classList.add('active');
     profil.classList.add('active');
+    search.classList.add('active');
     body.classList.add('active');
     instruction_screen.classList.remove('active');
     if(instruction_screen.classList.contains('active'))
@@ -490,6 +499,7 @@ document.querySelector('#btn-return-game-screen').addEventListener('click',()=>{
     game_screen.classList.remove('active');
     start_screen.classList.add('active');
     profil.classList.add('active');
+    search.classList.add('active');
     body.classList.add('active');
     document.querySelector('#btn-continue').classList.remove('inactive');
     document.querySelector('.header').classList.add('normal');
@@ -497,6 +507,9 @@ document.querySelector('#btn-return-game-screen').addEventListener('click',()=>{
         saveGameInfo();
         savedGameInfo = true;
 });
+document.querySelector('#search-bar').addEventListener('click',()=>{
+    window.location.href = "search.html";
+})
 //cookies for user
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -506,13 +519,38 @@ function getCookie(name) {
 
 window.onload = () => {
     const element = document.querySelector(".salut");
+    
+    let name = getCookie('name');
+    name = name.replace("%20",' ');
+    name = name.replace("%20",' ');
 
-    const name = getCookie('name');
-
+    name=name.replace("%20",' ');
+    name=name.replace("%20",' ');
+    
     element.textContent = `Salut, ${name}!`;
 
     const resultLevelName = document.querySelector("#levelname");
     resultLevelName.textContent = `${ CONSTANT.LEVEL_NAME[level_index]}`;
+
+    
+    const profil_e = document.querySelector(".picture");
+    const image = getCookie('profil-image');
+    if(image === 'icon' )
+    {
+        let icon =  document.createElement('span');
+        icon.setAttribute('class','material-symbols-outlined');
+        icon.setAttribute('id','picture');
+        icon.textContent = "account_circle";
+        profil_e.appendChild(icon);  
+    }
+    else
+    {
+        let img = document.createElement('img');
+        img.src=`${image}`;
+        profil_e.appendChild(img);
+        img.style.width = "60px";
+        img.style.borderRadius = "100%";
+    }
 };
 function updateDb(){
     const id= getCookie('id');

@@ -55,6 +55,23 @@ body{
 .profil{
     display: none;
 }
+.search.active{
+    width:20%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    position:absolute;
+    left:4vw;
+    cursor:pointer;
+    background-color: white;
+    flex-direction: row;
+    border-radius: 4px;
+    color: black;
+}
+.search{
+    display: none;
+}
 .game.active{
     display: flex;
     flex-direction: column;
@@ -415,6 +432,23 @@ ul{
     padding-bottom: 14px;
 
 }
+#picture{
+    font-size: 45px;
+}
+/*#search-bar{
+    width:20%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    position:absolute;
+    left:4vw;
+    cursor:pointer;
+    background-color: white;
+    flex-direction: row;
+    border-radius: 4px;
+    color: black;
+}*/
 @media only screen and (max-width: 600px)
 {
     .go-back{

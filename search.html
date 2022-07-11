@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <link rel="stylesheet" href="search.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 48
+        }
+    </style>
+   
+</head>
+<body>
+    <div class="header normal">
+        <!--<p><a id="gb" href="index.html">GO BACK</a></p>-->
+        <h1 id="title">Sudoku</h1>    
+    </div>
+    <form onsubmit="redirectMain()" class="redirectMain">
+        <button class="btn purple go-back in-main" id="btn-return-game-screen" type="submit" style="border:none;">
+            <span class="material-symbols-outlined">
+                arrow_back
+            </span>
+        </button>
+    </form>
+    
+    <div class="searchForm">
+        <form class="search" onsubmit="search()">
+            <div class="in-form-search">
+                <input type="text" placeholder="Cauta-ti prietenii aici." name="name" id="input-search">
+                <button type="submit" class="btn purple" id="search-submit">Cauta</button>
+            </div>
+            
+            
+            
+        </form>
+        <p>Cautarea se face decamdata doar dupa nume.</p>
+    </div>
+    <div class="results">
+        <h2>Rezultate</h2>
+        <div class="results-box">
+            <div class="result">
+                <div class="res" id="id">ID</div>
+                <div class="res" id="picture">POZA PROFIL</div>
+                <div class="res" id="name">NUME</div>
+                <div class="res">ADD FRIEND</div>
+            </div>
+        </div>
+    </div>
+    <script src="search.js"></script>
+</body>
+</html>

@@ -6,6 +6,8 @@ const app =express();
 const mysql = require('mysql');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
+const multer = require('multer');
+const path = require('path');
 
 
 //usage
@@ -92,6 +94,7 @@ app.post('/api/login',(req,res) =>{
                 res.cookie("veryhard",results[0].veryhard)
                 res.cookie("insane",results[0].insane);
                 res.cookie("inhuman",results[0].inhuman);
+                res.cookie("profil-image",results[0].profilimage);
                 res.redirect("/game.html");
             }
             else
@@ -137,7 +140,8 @@ app.post('/api/signup',(req,res)=>{
                 hard:'0',
                 veryhard:'0',
                 insane:'0',
-                inhuman:'0'
+                inhuman:'0',
+                profilimage:'icon'
                 
             };
             let sqlQuery = "INSERT INTO players SET ?";
@@ -197,6 +201,368 @@ app.get('/api/player/',(req,res)=>{
 
     res.send(req.cookies);
 })
+//! Use of Multer
+var storage = multer.diskStorage({
+    destination: (req, file, callBack) => {
+        callBack(null, './images/')     // './images/' directory name where save the file
+    },
+    filename: (req, file, callBack) => {
+        callBack(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+    }
+})
+ 
+var upload = multer({
+    storage: storage
+});
+ 
+app.post('/api/addImage/:id', upload.single('image'),(req,res)=>{
+    if(!req.file)
+    {
+        console.log("nothing to upload...");
+    }
+    else
+    {
+        const id = req.params.id;
+        //const image = req.body.image;
+        console.log(req.file.filename);
+        console.log("called add image...");
+        let imgsrc = '/images/'+req.file.filename;
+        let sqlOuery = `UPDATE players SET profilimage= '${imgsrc}' WHERE Id=${id}`;
+        conn.query(sqlOuery,(err,results)=>{
+            if(err) throw err;
+            console.log("iMage uploaded")
+            let sqlQuery2 = ` SELECT * FROM players WHERE Id=${id}`;
+            conn.query(sqlQuery2,(err,results2)=>{
+                if(err) throw err;
+                res.cookie("profil-image",results2[0].profilimage);
+                res.redirect('/profil.html');
+            })
+        })
+    }
+    
+});
+app.post('/api/updatename/:id', (req,res)=>{
+    const id = req.params.id;
+    const name = req.body.name;
+    let sqlOuery = `UPDATE players SET nume='${name}' WHERE Id=${id}`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        console.log("name updated...");
+        let sqlQuery2 = ` SELECT * FROM players WHERE Id=${id}`;
+        conn.query(sqlQuery2,(err,results2)=>{
+            if(err) throw err;
+            console.log("cookie name created...");
+            res.cookie("name",results2[0].nume);
+            res.redirect("/profil.html");
+        })
+    })
+})
+
+app.post('/api/removeImage/:id', (req,res) =>{
+    const id = req.params.id;
+    let sqlQuery = `UPDATE players SET profilimage='icon' WHERE Id=${id}`;
+    conn.query(sqlQuery,(err,results) =>{
+        if(err) throw err;
+        console.log("Image deleted...");
+        res.cookie('profil-image', 'icon');
+        res.redirect('/profil.html');
+    })
+});
+app.post('/api/search/:id',(req,res)=>{
+    const id = req.params.id;
+    const name = req.body.name;
+    let sqlOuery= `SELECT * FROM players WHERE nume='${name}'`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        console.log("searched...");
+        res.cookie(`results-lenght`,results.length);
+        let sqlOuery2 = `SELECT * FROM relation`;
+        conn.query(sqlOuery2,(err,results2)=>{
+            if(err) throw err;
+            console.log('Searching in relation...');
+            for(let i=0; i<results.length; i++)
+            {
+                res.cookie(`${i}_id`,results[i].Id);
+                res.cookie(`${i}_profil-picture`, results[i].profilimage);
+                res.cookie(`${i}_name`,results[i].nume);
+                res.cookie(`${i}_status`,'button');
+            }
+            for(let i = 0; i<results.length ; i++)
+            {
+                for(let j=0; j<results2.length ; j++)
+                {
+                    if( (results[i].Id == results2[j].first && id ==results2[j].second) || (results[i].Id == results2[j].second && id == results2[j].first))
+                    {
+                        res.cookie(`${i}_status`,'no');
+                    }
+                }
+            }
+            
+            res.redirect("/search.html");
+
+        })
+        
+    });
+});
+
+app.post('/api/delete/search/cookies/:len',(req,res)=>{
+    const len = req.params.len;
+    for(let i=0;i<len;i++)
+    {
+        res.clearCookie(`${i}_id`);
+        res.clearCookie(`${i}_profil-picture`);
+        res.clearCookie(`${i}_name`);
+    }
+    res.clearCookie('results-lenght');
+    console.log("search cookies deleted...")
+    res.redirect('/game.html');
+    
+});
+
+app.post('/api/delete/received/cookies/:len',(req,res)=>{
+    const len = req.params.len;
+    for(let i=0;i<len;i++)
+    {
+        res.clearCookie(`${i}_id`);
+        res.clearCookie(`${i}_profil-picture`);
+        res.clearCookie(`${i}_name`);
+        
+    }
+    res.clearCookie('results-lenght');
+    console.log("send cookies deleted...")
+    res.redirect('/profil.html');
+})
+
+app.post('/api/delete/send/cookies/:len',(req,res)=>{
+    const len = req.params.len;
+    for(let i=0;i<len;i++)
+    {
+        res.clearCookie(`${i}_id`);
+        res.clearCookie(`${i}_profil-picture`);
+        res.clearCookie(`${i}_name`);
+        res.clearCookie(`${i}_status`);
+    }
+    res.clearCookie('results-lenght');
+    console.log("send cookies deleted...")
+    res.redirect('/profil.html');
+    
+});
+
+app.post('/api/addFriend/:userid/:friendid',(req,res)=>{
+    const userid = req.params.userid;
+    const friendid = req.params.friendid;
+    let sqlOuery = `SELECT * FROM relation WHERE first=${userid} AND second=${friendid}`;
+    conn.query(sqlOuery,(err,results)=>
+    {
+        if (err) throw err;
+        console.log("Called Add Friend...");
+        if(results.length ===0)
+        {
+            let sqlOuery2 = `SELECT * FROM relation WHERE first=${friendid} AND second=${userid}`;
+            conn.query(sqlOuery2,(err,results2)=>{
+                if(err) throw err;
+                if(results2.length === 0)
+                {
+                    let sqlQuery3 = `INSERT INTO relation (first,second,status) VALUES (${userid},${friendid},'wait')`;
+                    conn.query(sqlQuery3,(err,results3)=>{
+                        if(err) throw err;
+                        res.send(`<script>alert("Ai trimis o cerere de prietenie utilizatorului cu id-ul ${friendid}. Verifica rubrica SEND."); 
+                        window.location.replace("/search.html");</script>`);
+                    })
+                }
+                else
+                {
+                    res.send(`<script>alert("Ai primit o cerere in prietenie de la acest utilizator sau esti deja prieten cu el. Verifica rubricile RECEIVED si FRIENDS"); 
+            window.location.replace("/search.html")</script>`);
+                }
+                
+            })
+            
+            
+        }
+        else
+        {
+            res.send(`<script>alert("Deja ai trimis o cerere de prietenie acestui utilizator sau sunteti deja prieten cu el. Va recomand sa verificati rubricile SEND si FRIENDS."); 
+            window.location.replace("/search.html")</script>`);
+        }
+    })
+})
+
+app.post('/api/send/:id',(req,res)=>{
+    const id = req.params.id;
+    const array = ['wait','rejected'];
+    let sqlOuery = `SELECT * FROM relation WHERE first=${id} AND status IN (?)`;
+    conn.query(sqlOuery,[array],(err,results)=>{
+        if(err) throw err;
+        console.log("Called send...");
+        if(results.length===0)
+        {
+            res.send(`<script>alert("Nu ai trimis nicio cerere de prietenie. Pentru a face acest lucru, consulta instructiunile."); 
+            window.location.replace("/send.html");</script>`);
+        }
+        else
+        {
+            const friendIdArray = [];
+            for(let i=0; i<results.length; i++)
+            {
+                res.cookie(`${i}_status`,results[i].status);
+                friendIdArray[i] = results[i].second;
+            }
+            let sqlOuery2 = `SELECT * FROM players WHERE Id IN (?)`;
+            conn.query(sqlOuery2,[friendIdArray],(err,results2)=>{
+                if(err) throw err;
+                console.log("Creating Cookies...");
+                res.cookie(`results-lenght`,results2.length);
+                for(let i=0; i<results2.length; i++)
+                {
+                    res.cookie(`${i}_id`,results2[i].Id);
+                    res.cookie(`${i}_profilimage`,results2[i].profilimage);
+                    res.cookie(`${i}_name`,results2[i].nume);
+
+                }
+                res.redirect("/send.html");
+            })
+        }
+    })
+})
+
+app.post('/api/receive/:id',(req,res)=>{
+    const id= req.params.id;
+    let sqlOuery = `SELECT * FROM relation WHERE second=${id} AND status='wait'`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        console.log('Called received post ...');
+        if(results.length === 0)
+        {
+            res.send(`<script>alert("Nu ai primit nicio cerere de prietenie."); 
+            window.location.replace("/received.html");</script>`);
+        }
+        else
+        {
+            const friendIdArray = [];
+            for(let i=0; i<results.length; i++)
+            {
+                
+                friendIdArray[i] = results[i].first;
+            }
+            let sqlOuery2 = `SELECT * FROM players WHERE Id IN (?)`;
+            conn.query(sqlOuery2,[friendIdArray],(err,results2)=>{
+                if(err) throw err;
+                console.log("Creating Cookies...");
+                res.cookie(`results-lenght`,results2.length);
+                for(let i=0; i<results2.length; i++)
+                {
+                    res.cookie(`${i}_id`,results2[i].Id);
+                    res.cookie(`${i}_profilimage`,results2[i].profilimage);
+                    res.cookie(`${i}_name`,results2[i].nume);
+
+                }
+                res.redirect("/received.html");
+            })
+        }
+
+    })
+})
+
+app.post('/api/acceptFriendRequest/:userid/:friendid/:i/:len',(req,res)=>{
+    const userid = req.params.userid;
+    const friendid = req.params.friendid;
+    const i =req.params.i;
+    let len = req.params.len;
+    let sqlOuery = `UPDATE relation SET status='friends' WHERE second=${userid} AND first=${friendid} `;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        console.log('friend added...');
+        res.clearCookie(`${i}_id`);
+        res.clearCookie(`${i}_profilimage`);
+        res.clearCookie(`${i}_name`);
+        len--;
+        res.cookie('results-lenght',len);
+        res.redirect('/received.html');
+    })
+})
+
+app.post('/api/rejectFriendRequest/:userid/:friendid/:i/:len',(req,res)=>{
+    const userid = req.params.userid;
+    const friendid = req.params.friendid;
+    const i = req.params.i;
+    let len = req.params.len;
+    let sqlOuery = `UPDATE relation SET status='rejected' WHERE second=${userid} AND first=${friendid}`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        console.log("Friend request rejected...");
+        res.clearCookie(`${i}_id`);
+        res.clearCookie(`${i}_profilimage`);
+        res.clearCookie(`${i}_name`);
+        len--;
+        res.cookie('results-lenght',len);
+        res.redirect('/received.html');
+    })
+});
+
+app.post('/api/deleteRequest/:userid/:friendid/:i/:len',(req,res)=>{
+    const userid = req.params.userid;
+    const friendid = req.params.friendid;
+    const i = req.params.i;
+    let len = req.params.len;
+    let sqlOuery = `DELETE FROM relation WHERE first=${userid} AND second=${friendid}`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        console.log("Request DELETED...");
+        res.clearCookie(`${i}_id`);
+        res.clearCookie(`${i}_profilimage`);
+        res.clearCookie(`${i}_name`);
+        len--;
+        res.cookie('results-lenght',len);
+        res.redirect('/send.html');
+    })
+});
+app.post('/api/friends/:id',(req,res)=>{
+    const id = req.params.id;
+    let sqlOuery = `SELECT * FROM relation WHERE status='friends' AND (first=${id} OR second=${id})`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        console.log('Creating friends cookies...');
+        if(results.length === 0)
+        {
+            res.send(`<script>alert("Nu ai niciun prieten."); 
+            window.location.replace("/friends.html");</script>`);
+           
+        }
+        else
+        {
+            const friendIdArray = [];
+            for(let i=0; i<results.length; i++)
+            {
+                if(results[i].first != id){
+                    friendIdArray[i] = results[i].first;
+                }
+                else if(results[i].second != id)
+                {
+                    friendIdArray[i] = results[i].second;
+                }
+                    
+            }
+            let sqlOuery2 = `SELECT * FROM players WHERE Id IN (?)`;
+            conn.query(sqlOuery2,[friendIdArray],(err,results2)=>{
+                if(err) throw err;
+                console.log("Creating Cookies...");
+                res.cookie(`results-lenght`,results2.length);
+                for(let i=0; i<results2.length; i++)
+                {
+                    res.cookie(`${i}_id`,results2[i].Id);
+                    res.cookie(`${i}_profilimage`,results2[i].profilimage);
+                    res.cookie(`${i}_name`,results2[i].nume);
+
+                }
+                res.redirect("/friends.html");
+            })
+        }
+
+    })
+
+})
+
 function apiResponse (results) {
     return JSON.stringify({
         "status":200,
@@ -214,9 +580,11 @@ app.get('/delete/cookies/',(req,res)=>{
     res.clearCookie('veryhard');
     res.clearCookie('insane');
     res.clearCookie('inhuman');
+    res.clearCookie('profil-image');
     res.send(`<script>alert("Te-ai delogat!"); window.location.replace("/signup.html"); </script>`);
     
 })
+
 //app listens to port 3001
 app.listen(3001,()=>{
     console.log('Server started on port 3001...');
