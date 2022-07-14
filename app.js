@@ -561,6 +561,68 @@ app.post('/api/friends/:id',(req,res)=>{
 
     })
 
+});
+
+app.post('/api/compare/:friendid',(req,res)=>{
+    const friendid = req.params.friendid;
+    let sqlOuery = `SELECT * FROM players WHERE Id=${friendid}`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        console.log("Creating cookies about friend...");
+        if(results.length ===0)
+            res.send('a intervenit o eroare...');
+        else
+        {
+            res.cookie('friend_id',results[0].Id);
+            res.cookie('friend_name',results[0].nume);
+            res.cookie('friend_profilimage',results[0].profilimage);
+            res.cookie('friend_easy',results[0].easy);
+            res.cookie('friend_medium',results[0].medium);
+            res.cookie('friend_hard',results[0].hard);
+            res.cookie('friend_veryhard',results[0].veryhard);
+            res.cookie('friend_insane',results[0].insane);
+            res.cookie('friend_inhuman',results[0].inhuman);
+            res.redirect('/compare.html');
+        }
+    })
+})
+
+app.post('/api/delete/friend/cookies',(req,res)=>{
+    res.clearCookie('friend_name');
+    res.clearCookie('friend_id');
+    res.clearCookie('friend_easy');
+    res.clearCookie('friend_medium');
+    res.clearCookie('friend_hard');
+    res.clearCookie('friend_veryhard');
+    res.clearCookie('friend_insane');
+    res.clearCookie('friend_inhuman');
+    res.clearCookie('friend_profilimage');
+    res.redirect('/friends.html')
+});
+
+app.post('/api/change/password/:id',(req,res) =>{
+    const id = req.params.id;
+    const oldpassword = req.body.oldpassword;
+    const newpassword = req.body.newpassword;
+    let sqlOuery = `SELECT * FROM players WHERE Id=${id}`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        let password_hash = results[0].password;
+        let verified = bcrypt.compareSync(oldpassword,password_hash);
+        if(verified)
+        {
+            let new_password_hash = bcrypt.hashSync(newpassword,10);
+            let sqlOuery2 = `UPDATE players SET password = ?  WHERE Id=${id}`;
+            conn.query(sqlOuery2,new_password_hash,(err,results2)=>{
+                if(err) throw err;
+                res.send("<script> alert('Parola actualizata cu succes.'); window.location.replace('/changepassword.html');</script>")
+            })
+        }
+        else
+        {
+            res.send("<script> alert(`Parola veche gresita`); window.location.replace(`/changepassword.html`);</script>")
+        }
+    })
 })
 
 function apiResponse (results) {

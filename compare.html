@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compara</title>
+    <link rel="stylesheet" href="compare.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 48
+        }
+    </style>
+    
+    <script src="compare.js"></script>
+</head>
+<body>
+    <div class="header normal">
+        <!--<p><a id="gb" href="index.html">GO BACK</a></p>-->
+        <h1 id="title">Sudoku</h1>    
+    </div>
+    <form onsubmit="redirectMain()" class="redirectMain" action="http://localhost:3001/api/delete/friend/cookies" method="POST">
+        <button class="btn purple go-back in-main" id="btn-return-game-screen" type="submit" style="border:none;">
+            <span class="material-symbols-outlined">
+                arrow_back
+            </span>
+        </button>
+    </form>
+    <div class="container-box">
+        <div class="container">
+            <div class="predefined">
+                <div id="none">Imagine</div>
+                <div id="none">Nume</div>
+                <div class="easy">Easy</div>
+                <div class="medium">Medium</div>
+                <div class="hard">Hard</div>
+                <div class="veryhard">Very Hard</div>
+                <div class="insane">Insane</div>
+                <div class="inhuman">Inhuman</div>
+            </div>
+            <div class="predefined">
+                <div class="u_profilimage" id="profilimage"></div>
+                <div class="u_name" id="profil"></div>
+                <div class="u_easy" id="profil"></div>
+                <div class="u_medium" id="profil"></div>
+                <div class="u_hard" id="profil"></div>
+                <div class="u_veryhard" id="profil"></div>
+                <div class="u_insane" id="profil"></div>
+                <div class="u_inhuman" id="profil"></div>
+            </div>
+            <div class="predefined">
+                <div id="profil">-</div>
+                <div id="profil">-</div>
+                <div class="c_easy" id="profil"></div>
+                <div class="c_medium" id="profil"></div>
+                <div class="c_hard" id="profil"></div>
+                <div class="c_veryhard" id="profil"></div>
+                <div class="c_insane" id="profil"></div>
+                <div class="c_inhuman" id="profil"></div>
+            </div>
+            <div class="predefined">
+                <div class="f_profilimage" id="profilimage"></div>
+                <div class="f_name" id="profil"></div>
+                <div class="f_easy" id="profil"></div>
+                <div class="f_medium" id="profil"></div>
+                <div class="f_hard" id="profil"></div>
+                <div class="f_veryhard" id="profil"></div>
+                <div class="f_insane" id="profil"></div>
+                <div class="f_inhuman" id="profil"></div>
+            </div>
+        </div>
+    </div>
+    
+   
+</body>
+</html>

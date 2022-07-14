@@ -69,13 +69,13 @@ window.onload = () =>{
         form.setAttribute('class','form');
         form.setAttribute('id',`${i}`);
         result.appendChild(form);
-        //form.onsubmit = deleteRequest(form.id);
+        form.onsubmit = compare(form.id);
         //form.onsubmit = alert('Not working yet 😊');
 
         let button = document.createElement('button');
         button.setAttribute('class',`res btn purple`);
         button.setAttribute('id','addFriend');
-        button.textContent = "See profile";
+        button.textContent = "Compara";
         button.type= "submit";
         form.appendChild(button);
     }
@@ -85,6 +85,13 @@ const redirectMain =()=>{
     
     let res= getCookie('results-lenght');
     let action_src = `http://localhost:3001/api/delete/send/cookies/${res}`;
+    form.action = action_src;
+    form.method = "post";
+}
+const compare = (ID) =>{
+    const form  = document.getElementById(`${ID}`);
+    const friend = getCookie(`${ID}_id`);
+    let action_src = `http://localhost:3001/api/compare/${friend}`;
     form.action = action_src;
     form.method = "post";
 }
