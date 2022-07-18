@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -49,12 +49,34 @@
             <p>Cauta-ti prietenii aici.</p>
         </div>
         <h1 id="title">Sudoku</h1>
-        <div class="profil active" onclick="redirectProfil()">
+        
+        <div class="message active" >
+            <form onsubmit="redirectMessages()" class="messageForm">
+                <button class="cfm" type="submit">
+                    <div class="mail">
+                    
+                        <span class="material-symbols-outlined " id="message">
+                            mail
+                        </span>
+                              
+                            
+                        <p>Mesaje</p>
+                    </div>
+               
+                </button>
+            </form>
+                
+               
+            </div>
+        
+        
+        <div id="profil"class="profil active" onclick="redirectProfil()">
             <div class="picture">
                 
             </div>
             <p>Profil</p>
         </div>
+        
         
         
         

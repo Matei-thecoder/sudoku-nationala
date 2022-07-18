@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Received</title>
-    <link rel="stylesheet" href="received.css">
+    <title>Received Messages</title>
+    <link rel="stylesheet" href="message.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
@@ -20,29 +20,36 @@
         }
     </style>
     
-    <script src="received.js"></script>
+    <script src="message.js"></script>
 </head>
 <body>
     <div class="header normal">
         <!--<p><a id="gb" href="index.html">GO BACK</a></p>-->
         <h1 id="title">Sudoku</h1>    
     </div>
-    <form onsubmit="redirectMain()" class="redirectMain">
-        <button class="btn purple go-back in-main" id="btn-return-game-screen" type="submit" style="border:none;">
+    <!--<form onsubmit="" class="redirectMain">-->
+        <button class="btn purple go-back in-main" id="btn-return-game-screen" type="submit" style="border:none;" onclick="redirectMain()">
             <span class="material-symbols-outlined">
                 arrow_back
             </span>
         </button>
-    </form>
-    <h2>Cereri Primite</h2>
-    <div class="container">
-        <div class="result">
-            <div class="res" id="id">Id</div>
-            <div class="res" id="profilimage">Imagine</div>
-            <div class="res" id="name"> Nume</div>
-            <div class="res" id="status">Accepta</div>
-            <div class="res" id="status">Respinge</div>
+   <!-- </form> -->
+   <div class="container">
+    <div class="details">
+        <div class="profilimage" id="profilimage"></div>
+        <div class="det"><p id="tr">Id: </p> <p id="id"></p></div>
+        <div class="det"><p id="tr">Nume: </p><p id="name"></p></div>
+    </div>
+    <div class="content">
+        <div class="subiect"><p id="tr">Subiect: </p> <p id="subiect"></p></div>
+        <div class="message">
+            <p id="tr">Mesaj</p>
+            <div id="message">
+
+            </div>
         </div>
     </div>
+   </div>
+    
 </body>
 </html>

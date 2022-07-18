@@ -20,6 +20,7 @@ const body = document.querySelector('.body');
 const profil = document.querySelector('.profil');
 const search = document.querySelector('.search');
 const header = document.querySelector('.header');
+const message = document.querySelector('.message');
 
 let timer=null;
 let pause = false;
@@ -84,9 +85,10 @@ const returnStartScreen = () =>{
     //window.location.href = "index.html";
     game_screen.classList.remove('active');
     start_screen.classList.add('active');
-    profil.classList.add('active');
     search.classList.add('active');
+    profil.classList.add('active');
     body.classList.add('active');
+    message.classList.add('active');
     
 }
 const clearSudoku = () =>{
@@ -398,6 +400,7 @@ document.querySelector('#btn-continue').addEventListener('click', () => {
         result_screen.classList.remove('active');
     start_screen.classList.remove('active');
     profil.classList.remove('active');
+    message.classList.remove('active');
     search.classList.remove('active');
     body.classList.remove('active');
     game_screen.classList.add('active');
@@ -441,6 +444,7 @@ document.querySelector('#btn-delete').addEventListener('click',()=>{
 document.querySelector('.btn.new-game').addEventListener('click', ()=>{
     start_screen.classList.remove('active');
     profil.classList.remove('active');
+    message.classList.remove('active');
     search.classList.remove('active');
     body.classList.remove('active');
     if(instruction_screen.classList.contains('active'))
@@ -460,6 +464,8 @@ document.querySelector('.btn.new-game').addEventListener('click', ()=>{
 document.querySelector('#instruction-show').addEventListener('click', ()=>{
     start_screen.classList.remove('active');
     profil.classList.remove('active');
+    message.classList.remove('active');
+    
     search.classList.remove('active');
     body.classList.remove('active');
     if(instruction_screen.classList.contains('active'))
@@ -477,6 +483,7 @@ document.querySelector('#instruction-show').addEventListener('click', ()=>{
 document.querySelector('#btn-go-back').addEventListener('click',()=>{
     start_screen.classList.add('active');
     profil.classList.add('active');
+    message.classList.add('active');
     search.classList.add('active');
     body.classList.add('active');
     instruction_screen.classList.remove('active');
@@ -499,6 +506,7 @@ document.querySelector('#btn-return-game-screen').addEventListener('click',()=>{
     game_screen.classList.remove('active');
     start_screen.classList.add('active');
     profil.classList.add('active');
+    message.classList.add('active');
     search.classList.add('active');
     body.classList.add('active');
     document.querySelector('#btn-continue').classList.remove('inactive');
@@ -576,7 +584,13 @@ function updateDb(){
     form.method = "post";
     
 };
-
+const redirectMessages = () =>{
+    const form = document.querySelector('.messageForm');
+    let id =getCookie('id');
+    let action_src = `http://localhost:3001/api/received/messages/${id}`;
+    form.action = action_src;
+    form.method = "post";
+}
 
 const startGame =()=>{
     seconds = 0;

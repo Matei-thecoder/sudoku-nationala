@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -47,15 +47,15 @@
                     </div>    
                 </div>
                 <div class="buttonshowform">
-                    <button class="btn purple addimage" onclick="showAddImageForm()" id="showform">Add Image</button>
+                    <button class="btn purple addimage" onclick="showAddImageForm()" id="showform">Adauga poza</button>
                     <form onsubmit="removeImage()" class="removeImage" >
-                        <button type="submit" class="btn purple addimage">Remove Image</button>
+                        <button type="submit" class="btn purple addimage">Sterge poza</button>
                     </form>
                 </div>
                 <div class="changepicture">
                     <form class="upload-image" onsubmit="uploadImage()" method="POST" enctype="multipart/form-data">
                         <input class="file-upload-input" type="file" onchange="readURL(this)" accept="Image/*" name="image">
-                        <button class="btn purple addimage">Add image</button>
+                        <button class="btn purple addimage">Adauga</button>
                     </form>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                 
                 
                 <div class="buttonshowform">
-                    <button class="btn purple addimage" onclick="showChangeNameForm()" id="showform">Change Name</button>
+                    <button class="btn purple addimage" onclick="showChangeNameForm()" id="showform">Schimba numele</button>
                     <button class="btn purple addimage" onclick="window.location.href=`changepassword.html`">Schimba Parola</button>
     
                 </div>
@@ -82,7 +82,7 @@
                             <input class="input-field-name" type="text" name="name" id="name" placeholder="Nume">
     
                         </div>
-                        <button type="submit" class="btn purple addimage" style="background-color:blueviolet; border-color: blueviolet;">Change Name</button>    
+                        <button type="submit" class="btn purple addimage" style="background-color:blueviolet; border-color: blueviolet;">Schimba</button>    
                     </form>
                 </div>
             </div>
@@ -110,25 +110,25 @@
             <div class="social-box">
                 <div class="send" id="soc">
                     <form onsubmit="sendFriendRequest()" class="formSend" id="formSocial">
-                        <button type="submit" id="soc-a">Send</button>
+                        <button type="submit" id="soc-a">Cereri trimise</button>
                     </form>
                     
                 </div>
                 <div class="received" id="soc">
                     <form onsubmit="receiveFriendRequest()" class="formReceive" id="formSocial">
-                        <button type="submit" id="soc-a">Received</button>
+                        <button type="submit" id="soc-a">Cereri primite</button>
                     </form>
                 </div>
                 <div class="friends" id="soc">
                     <form onsubmit="friends()" class="formFriends" id="formSocial">
-                        <button type="submit" id="soc-a">Friends</button>
+                        <button type="submit" id="soc-a">Prieteni</button>
                     </form>
                 </div>
             </div>
             
         </div>
         <form action="http://localhost:3001/delete/cookies/" method="GET" id="logout">
-            <button class="btn adjust purple">Log Out</button>
+            <button class="btn adjust purple">Delogheaza-te</button>
         </form>
         
     </div>

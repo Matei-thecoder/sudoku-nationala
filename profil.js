@@ -57,7 +57,7 @@ window.onload = () => {
         img.style.width = "100px";
         img.style.borderRadius = "100%";
         let buton = document.querySelector('#showform');
-        buton.innerHTML= "Change Image";
+        buton.innerHTML= "Schimba poza";
 
     }
     id_e.textContent = `${id_c}.`

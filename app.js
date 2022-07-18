@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const path = require('path');
+const { receiveMessageOnPort } = require('worker_threads');
 
 
 //usage
@@ -348,9 +349,10 @@ app.post('/api/delete/send/cookies/:len',(req,res)=>{
     
 });
 
-app.post('/api/addFriend/:userid/:friendid',(req,res)=>{
+app.post('/api/addFriend/:userid/:friendid/:i',(req,res)=>{
     const userid = req.params.userid;
     const friendid = req.params.friendid;
+    const i =req.params.i;
     let sqlOuery = `SELECT * FROM relation WHERE first=${userid} AND second=${friendid}`;
     conn.query(sqlOuery,(err,results)=>
     {
@@ -366,6 +368,7 @@ app.post('/api/addFriend/:userid/:friendid',(req,res)=>{
                     let sqlQuery3 = `INSERT INTO relation (first,second,status) VALUES (${userid},${friendid},'wait')`;
                     conn.query(sqlQuery3,(err,results3)=>{
                         if(err) throw err;
+                        res.cookie(`${i}_status`,'no');
                         res.send(`<script>alert("Ai trimis o cerere de prietenie utilizatorului cu id-ul ${friendid}. Verifica rubrica SEND."); 
                         window.location.replace("/search.html");</script>`);
                     })
@@ -622,6 +625,186 @@ app.post('/api/change/password/:id',(req,res) =>{
         {
             res.send("<script> alert(`Parola veche gresita`); window.location.replace(`/changepassword.html`);</script>")
         }
+    })
+});
+
+app.post('/api/received/messages/:id',(req,res)=>{
+    const id= req.params.id;
+    let sqlOuery = `SELECT * FROM messages WHERE second=${id}`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        console.log("RECEIVED Messages Cookies created...");
+        console.log(id);
+        console.log(results.length);
+        if(results.length === 0)
+        {
+            res.cookie('receivedmessages','nomessages');
+            res.redirect("/receivedMessages.html");
+        }
+        else
+        {
+            res.cookie('results-length',results.length);
+            const people_who_send_messages_id = [];
+            for(let i=0; i< results.length; i++)
+            {
+                people_who_send_messages_id[i] = results[i].first;
+                res.cookie(`${i}_received_message`,results[i].message);
+                res.cookie(`${i}_received_subiect`,results[i].subiect);
+                res.cookie(`${i}_received_status`,results[i].status);
+                res.cookie(`${i}_received_messageid`,results[i].messageid);
+            }
+            let sqlOuery2 = `SELECT * FROM players WHERE Id IN (?)`;
+            conn.query(sqlOuery2,[people_who_send_messages_id],(err,results2)=>{
+                if(err) throw err;
+                const array = []
+                for(let i=0; i<results.length; i++)
+                {
+                    for(let j=0; j<results2.length; j++)
+                    {
+                        if(results[i].first == results2[j].Id)
+                        {
+                            res.cookie(`${i}_received_id`,results2[j].Id);
+                            res.cookie(`${i}_received_profilimage`,results2[j].profilimage);
+                            res.cookie(`${i}_received_name`,results2[j].nume);
+                            array[i] = results2[j].Id;
+                        }
+                    }
+                }
+               
+                console.log(array);
+                console.log(results2);
+                res.cookie('receivedmessages','yes');
+                res.redirect("/receivedMessages.html");
+
+            })
+        }
+    })
+})
+
+app.post('/api/view/received/message/:i/:friendid/:messageid/:userid',(req,res)=>{
+    const i = req.params.i;
+    const friendid = req.params.friendid;
+    const userid = req.params.userid;
+    const messageid  = req.params.messageid;
+    res.cookie(`${i}_received_status`,'read');
+    
+    let sqlOuery = ` UPDATE messages SET status='read' WHERE first=${friendid} AND second=${userid} AND messageid=${messageid}`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        console.log('ndfsdknfg');
+        let sqlOuery2 = `SELECT * FROM players WHERE Id=${friendid}`;
+        console.log(results);
+        conn.query(sqlOuery2,(err,results2)=>{
+            if(err) throw err;
+            res.cookie('friendid',results2[0].Id);
+            res.cookie('friendname',results2[0].nume);
+            res.cookie('friendprofilimage',results2[0].profilimage);
+            console.log(results2);
+            console.log(messageid);
+            let sqlQuery3 = `SELECT * FROM messages WHERE first=${friendid} AND (second=${userid} AND messageid=${messageid})`;
+            conn.query(sqlQuery3,(err,results3)=>{
+                if(err)throw err;
+                console.log(results3);
+                res.cookie('friendsubiect',results3[0].subiect);
+                res.cookie('friendmessage',results3[0].message);
+                res.redirect("/message.html");
+            })
+        })
+    })
+
+    
+})
+
+app.post('/api/send/messages/:id',(req,res)=>{
+    const id= req.params.id;
+    let sqlOuery = `SELECT * FROM messages WHERE first=${id}`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        console.log("SEND Messages Cookies created...");
+        if(results.length === 0)
+        {
+            res.cookie('sendmessages','nomessages');
+            res.redirect("/sendMessages.html");
+        }
+        else
+        {
+            res.cookie('results-length',results.length);
+            const people_who_received_messages_id = [];
+            const array = [];
+            for(let i=0; i< results.length; i++)
+            {
+                people_who_received_messages_id[i] = results[i].second;
+                res.cookie(`${i}_send_message`,results[i].message);
+                res.cookie(`${i}_send_subiect`,results[i].subiect);
+                res.cookie(`${i}_send_status`,results[i].status);
+                res.cookie(`${i}_send_messageid`,results[i].messageid);
+            }
+            console.log([people_who_received_messages_id])
+            
+            let sqlOuery2 = `SELECT * FROM players WHERE Id IN (?)`;
+            conn.query(sqlOuery2,[people_who_received_messages_id],(err,results2)=>{
+                if(err) throw err;
+                for(let i =0; i<results.length; i++)
+                {
+                    for(let j=0; j<results2.length; j++)
+                    {
+                        if(results[i].second == results2[j].Id)
+                        {
+                            res.cookie(`${i}_send_id`,results2[j].Id);
+                            res.cookie(`${i}_send_profilimage`,results2[j].profilimage);
+                            res.cookie(`${i}_send_name`,results2[j].nume);
+                            array[i] = results2[j].Id;
+                        }
+                    }
+                }
+                
+                console.log([array]);
+                res.cookie('sendmessages','yes');
+                res.redirect("/sendMessages.html");
+
+            })
+        }
+    })
+})
+
+app.post('/api/view/send/message/:i/:friendid/:messageid/:userid',(req,res)=>{
+    const i = req.params.i;
+    const friendid = req.params.friendid;
+    const userid = req.params.userid;
+    const messageid  = req.params.messageid;
+    console.log('ndfsdknfg');
+    let sqlOuery2 = `SELECT * FROM players WHERE Id=${friendid}`;
+    
+    conn.query(sqlOuery2,(err,results2)=>{
+        if(err) throw err;
+        res.cookie('friendid',results2[0].Id);
+        res.cookie('friendname',results2[0].nume);
+        res.cookie('friendprofilimage',results2[0].profilimage);
+        console.log(results2);
+        console.log(messageid);
+        let sqlQuery3 = `SELECT * FROM messages WHERE second=${friendid} AND (first=${userid} AND messageid=${messageid})`;
+        conn.query(sqlQuery3,(err,results3)=>{
+            if(err)throw err;
+            console.log(results3);
+            res.cookie('friendsubiect',results3[0].subiect);
+            res.cookie('friendmessage',results3[0].message);
+            res.redirect("/message.html");
+        })
+    })
+    
+
+    
+})
+
+app.post('/api/send/mail/:id',(req,res)=>{
+    const userid = req.params.id;
+    const friendid = req.body.id;
+    const subiect = req.body.subiect;
+    const message = req.body.message;
+    let sqlOuery = ` INSERT INTO messages (first,second,message,status,subiect) VALUES (${userid},${friendid},"${message}","unread","${subiect}") `;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        res.send("<script>alert('Mesaj trimis') ; window.location.href='/mail.html'</script>");
     })
 })
 

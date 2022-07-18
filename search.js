@@ -81,7 +81,7 @@ window.onload =() =>{
             let replaceAction = document.createElement('div')
             replaceAction.setAttribute('class','res');
             replaceAction.setAttribute('id','replace');
-            replaceAction.textContent = "No action available";
+            replaceAction.textContent = "Nici o actiune disponibila";
             result.appendChild(replaceAction);
         }
         
@@ -103,7 +103,7 @@ const addFriend = (ID) =>{
     let i = form.id;
     let friendid = getCookie(`${i}_id`);
     const userId = getCookie('id');
-    let action_src = `http://localhost:3001/api/addFriend/${userId}/${friendid}`;
+    let action_src = `http://localhost:3001/api/addFriend/${userId}/${friendid}/${i}`;
     form.action = action_src;
     form.method = "post";
 }

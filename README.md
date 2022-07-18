@@ -17,8 +17,17 @@ To do:
     b.received page✅;
     c.friends page  --neaparat✅;
 }
-10.comparison between friends. -- neaparat;
-11.change password option;
+10.comparison between friends. -- neaparat;✅
+11.change password option;✅
 12. disable add friend button from search page after a request has been send;✅
+13. mail system✅
+{
+    a.received messages;✅
+    b.send messages;✅
+    c.page send;✅
+    d.page message;✅
+    untill now : 
+    created the connection to game page, without js;✅
+}
 
 
