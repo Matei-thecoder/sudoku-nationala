@@ -27,13 +27,13 @@
         <!--<p><a id="gb" href="index.html">GO BACK</a></p>-->
         <h1 id="title">Sudoku</h1>    
     </div>
-    <!--<form onsubmit="" class="redirectMain">-->
-        <button class="btn purple go-back in-main" id="btn-return-game-screen" type="submit" style="border:none;" onclick="redirectMain()">
+    <form onsubmit="redirectMain()" class="redirectMain">
+        <button class="btn purple go-back in-main" id="btn-return-game-screen" type="submit" style="border:none;" >
             <span class="material-symbols-outlined">
                 arrow_back
             </span>
         </button>
-   <!-- </form> -->
+    </form>
     <div class="container">
         <h2>Trimite Mesaj</h2>
         <form id="form" name="form" onsubmit="sendMail()">

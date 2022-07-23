@@ -4,7 +4,11 @@ function getCookie(name) {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 const redirectMain = () =>{
-    window.history.back();
+    const form = document.querySelector('.redirectMain');
+    let id= getCookie('id');
+    let action_src = `http://localhost:3001/api/send/messages/${id}`;
+    form.action = action_src;
+    form.method = "post";
  }
 
  const sendMail =() =>{

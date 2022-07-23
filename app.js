@@ -369,13 +369,13 @@ app.post('/api/addFriend/:userid/:friendid/:i',(req,res)=>{
                     conn.query(sqlQuery3,(err,results3)=>{
                         if(err) throw err;
                         res.cookie(`${i}_status`,'no');
-                        res.send(`<script>alert("Ai trimis o cerere de prietenie utilizatorului cu id-ul ${friendid}. Verifica rubrica SEND."); 
+                        res.send(`<script>alert("Ai trimis o cerere de prietenie utilizatorului cu id-ul ${friendid}. Verifica rubrica Cereri trimise."); 
                         window.location.replace("/search.html");</script>`);
                     })
                 }
                 else
                 {
-                    res.send(`<script>alert("Ai primit o cerere in prietenie de la acest utilizator sau esti deja prieten cu el. Verifica rubricile RECEIVED si FRIENDS"); 
+                    res.send(`<script>alert("Ai primit o cerere in prietenie de la acest utilizator sau esti deja prieten cu el. Verifica rubricile Cereri primite si Prieteni"); 
             window.location.replace("/search.html")</script>`);
                 }
                 
@@ -385,7 +385,7 @@ app.post('/api/addFriend/:userid/:friendid/:i',(req,res)=>{
         }
         else
         {
-            res.send(`<script>alert("Deja ai trimis o cerere de prietenie acestui utilizator sau sunteti deja prieten cu el. Va recomand sa verificati rubricile SEND si FRIENDS."); 
+            res.send(`<script>alert("Deja ai trimis o cerere de prietenie acestui utilizator sau sunteti deja prieten cu el. Va recomand sa verificati rubricile Cereri primite si Prieteni."); 
             window.location.replace("/search.html")</script>`);
         }
     })
@@ -400,7 +400,7 @@ app.post('/api/send/:id',(req,res)=>{
         console.log("Called send...");
         if(results.length===0)
         {
-            res.send(`<script>alert("Nu ai trimis nicio cerere de prietenie. Pentru a face acest lucru, consulta instructiunile."); 
+            res.send(`<script>alert("Nu ai trimis nicio cerere de prietenie."); 
             window.location.replace("/send.html");</script>`);
         }
         else
