@@ -8,6 +8,10 @@ const redirectMain = () =>{
 }
 
 window.onload = () =>{
+    if(!window.location.hash) {
+        window.location = window.location + '#loaded';
+        window.location.reload();
+    }
     let receivedmessages = getCookie('receivedmessages');
     if(receivedmessages == 'nomessages')
     {
@@ -103,6 +107,7 @@ window.onload = () =>{
         }
     }
 }
+
 const showMesage = (ID) =>{
     const form  = document.getElementById(`${ID}`);
     let friendid= getCookie( `${ID}_received_id`);

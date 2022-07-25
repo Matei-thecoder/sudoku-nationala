@@ -7,6 +7,10 @@ const redirectMain = () =>{
     window.location.href = "game.html";
 }
 window.onload = () =>{
+    if(!window.location.hash) {
+        window.location = window.location + '#loaded';
+        window.location.reload();
+    }
     let sendmessages = getCookie('sendmessages');
     if(sendmessages == 'nomessages')
     {

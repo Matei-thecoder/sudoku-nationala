@@ -4,7 +4,7 @@ function getCookie(name) {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 const redirectMain = () =>{
-   window.history.back();
+   window.history.go(-1);
 }
 window.onload = () =>{
     let friendid =getCookie('friendid');
