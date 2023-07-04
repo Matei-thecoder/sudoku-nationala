@@ -108,7 +108,7 @@ const initSudoku = ()=>{
     //generate sudoku here
     su = sudokuGen(level);
     su_answer =[...su.question];
-    
+    console.table(su.question);
     console.table(su_answer);
     saveGameInfo();
     //show sudoku to div
@@ -355,6 +355,10 @@ const initCellsEvent = () => {
     })
 }
 //1h 40 min
+document.querySelector('.multiplayer').addEventListener('click',()=>{
+    window.location.href = "/multiplayer/choosemode.html";
+})
+
 document.querySelector('#btn-level-game').addEventListener('click',()=>{
     if(level_index == 5)
     {

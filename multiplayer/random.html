@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="random.css">
+</head>
+<body>
+    <div class="header normal">
+        <!--<p><a id="gb" href="index.html">GO BACK</a></p>-->
+        <h1 id="title">Sudoku</h1>    
+    </div>
+    <!--<a href="../game.html">
+    <div class="btn purple go-back in-main" id="btn-return-game-screen" >
+        <span class="material-symbols-outlined">
+            arrow_back
+        </span>
+    </div>
+    </a>-->
+    <!--game screen-->
+    <div class="game " id="game-screen">
+        
+            <div class="btn purple go-back in-main" id="btn-return-game-screen">
+                <span class="material-symbols-outlined">
+                    arrow_back
+                    </span>
+            </div>
+        
+        <div>
+            <div class="your name"></div>
+            <div class="opponent name "></div>
+            <div class="mistakes"></div>
+        </div>
+        <div class="main_grid">
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+            <div class="main-grid-cell"></div>
+        </div> 
+        <div class="main-game-info-box main-game-info-time">
+            <span id="game-time">00:00:00</span>
+            <!--<div class="pause-btn" id="btn-pause">
+                <button id="p-b" class="btn-purple bx-pause">II</button>
+            </div>-->
+        </div>
+        <div class="numbers">
+            <div class="number">1</div>
+            <div class="number">2</div>
+            <div class="number">3</div>
+            <div class="number">4</div>
+            <div class="number">5</div>
+            <div class="number">6</div>
+            <div class="number">7</div>
+            <div class="number">8</div>
+            <div class="number">9</div>
+            <div class="delete" id="btn-delete">X</div>
+        </div>
+    </div>
+    <!--end game screen-->
+    <div class="result-screen" id="result-screen">
+        <div class="result-box">
+            
+            <div class="congrate">Felicitari!</div>
+            <div class="time">
+                <div class="info">Timp:</div>
+                <div class="complete" id="result-time"> </div></span>
+                
+            </div>
+            <div class="time">
+                <div class="info">Versus</div>
+                <div class="complete" id="opponent"></div>
+            </div>
+            <div class="iatdb">
+                <span class="material-symbols-outlined">
+                    info
+                </span>
+                Daca nu apesi butonul "Finalizeaza", progresul tau nu va fi actualizat in pagina profil.
+            </div>
+            <form  id="finish">
+                <button type="submit" class="btn adjust purple" id="btn-new-game-2" style="border:none;">Finalizeaza.</button>
+            </form>
+            
+        </div>
+        
+    </div>
+    <div class="wait-screen active">
+        <div class="wait-text">Asteapta oponent</div>
+        <div class="loader"></div>
+    </div>
+</body>
+<script src="../sudoku.js"></script>
+<script src="../constant.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="random.js"></script>
+
+
+</html>

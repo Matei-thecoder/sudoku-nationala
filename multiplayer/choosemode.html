@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="choosemode.css">
+    
+</head>
+<body>
+    <div class="header normal">
+        <!--<p><a id="gb" href="index.html">GO BACK</a></p>-->
+        <h1 id="title">Sudoku</h1>    
+    </div>
+    <div class="btn purple go-back in-main" id="btn-return-game-screen" >
+        <span class="material-symbols-outlined">
+            arrow_back
+        </span>
+    </div>
+    <div class="container">
+        <h2>Choose a game mode</h2>
+        <div class="mini-container">
+            <div class="btn purple" id="random" onclick="random()">Play Vs Random</div>
+            <form onsubmit="friends()" class="formFriends" id="formSocial">
+                <button type="submit" id="friend" class="btn purple">Play Vs Friend</button>
+            </form>
+            <!--<div class="btn purple" id="friend" onclick="friend()">Play Vs Friend</div>-->
+        </div>
+        
+    </div>
+</body>
+<script src="choosemode.js"></script>
+</html>

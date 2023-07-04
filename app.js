@@ -10,14 +10,25 @@ const multer = require('multer');
 const path = require('path');
 const { receiveMessageOnPort } = require('worker_threads');
 const validator = require('email-validator');
-
+const {createServer} = require("http");
+const {Server} = require("socket.io");
+const { Socket } = require('dgram');
+const httpServer = createServer(app);
+const io = new Server(httpServer,{});
+const fs= require("fs");
+const {sudokuGen} = require("./sudoku2.js");
+const {CONSTANT} = require("./constant2.js");
+const jwtAuth = require('socketio-jwt-auth');
 
 //usage
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/"));
+app.use(express.static(__dirname+"/../node_modules/"));
+
 app.use(cookieParser());
+
 
 //connection to myzql database 
 const conn = mysql.createConnection({
@@ -33,6 +44,10 @@ conn.connect( (err) =>{
 });
 
 //secure
+app.get("/",(req,res)=>{
+    const stream = fs.createReadStream(__dirname+"/../multiplayer/random.html");
+    stream.pipe(res);
+})
 app.get("/game.html", (req, res) => {
     let { email, password } = req.cookies;
     try {
@@ -103,6 +118,8 @@ app.post('/api/login',(req,res) =>{
                     res.cookie("insane",results[0].insane);
                     res.cookie("inhuman",results[0].inhuman);
                     res.cookie("profil-image",results[0].profilimage);
+                    res.cookie('mvr',results[0].mvr);
+                    res.cookie('mvf',results[0].mvf);
                     res.redirect("/game.html");
                 }
                 else
@@ -153,7 +170,9 @@ app.post('/api/signup',(req,res)=>{
                 veryhard:'0',
                 insane:'0',
                 inhuman:'0',
-                profilimage:'icon'
+                profilimage:'icon',
+                mvr:'0',
+                mvf:'0',
                 
             };
             let sqlQuery = "INSERT INTO players1 SET ?";
@@ -602,6 +621,8 @@ app.post('/api/compare/:friendid',(req,res)=>{
             res.cookie('friend_veryhard',results[0].veryhard);
             res.cookie('friend_insane',results[0].insane);
             res.cookie('friend_inhuman',results[0].inhuman);
+            res.cookie('friend_mvr',results[0].mvr);
+            res.cookie('friend_mvf',results[0].mvf);
             res.redirect('/compare.html');
         }
     })
@@ -617,6 +638,8 @@ app.post('/api/delete/friend/cookies',(req,res)=>{
     res.clearCookie('friend_insane');
     res.clearCookie('friend_inhuman');
     res.clearCookie('friend_profilimage');
+    res.clearCookie('friend_mvr');
+    res.clearCookie('friend_mvf')
     res.redirect('/friends.html')
 });
 
@@ -843,11 +866,491 @@ app.get('/delete/cookies/',(req,res)=>{
     res.clearCookie('insane');
     res.clearCookie('inhuman');
     res.clearCookie('profil-image');
+    res.clearCookie('mvr');
+    res.clearCookie('mvf')
     res.send(`<script>alert("Te-ai delogat!"); window.location.replace("/signup.html"); </script>`);
     
 })
-
-//app listens to port 3001
-app.listen(3001,()=>{
-    console.log('Server started on port 3001...');
+app.post('/api/modifyMultiplayer/:id/:mvr',(req,res)=>{
+    let id = req.params.id;
+    let mvr = req.params.mvr;
+    let sqlOuery = `UPDATE players1 SET mvr=${mvr} WHERE Id=${id}`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        let sqlOuery2 = `SELECT * FROM players1 WHERE Id=${id}`;
+        conn.query(sqlOuery2,(err,results2)=>{
+            if(err) throw err;
+            res.cookie('mvr',results2[0].mvr);
+            res.send(`<script> window.location.replace("http://localhost:3001/game.html")</script>`)
+        })
+        //res.send(`<script> window.location.replace("http://localhost:3001/game.html")</script>`)
+    })
+})
+app.post('/api/modifyFMultiplayer/:id/:mvf',(req,res)=>{
+    let id = req.params.id;
+    let mvf = req.params.mvf;
+    let sqlOuery = `UPDATE players1 SET mvf=${mvf} WHERE Id=${id}`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        let sqlOuery2 = `SELECT * FROM players1 WHERE Id=${id}`;
+        conn.query(sqlOuery2,(err,results2)=>{
+            if(err) throw err;
+            res.cookie('mvf',results2[0].mvf);
+            res.send(`<script> window.location.replace("http://localhost:3001/game.html")</script>`)
+        })
+        //res.send(`<script> window.location.replace("http://localhost:3001/game.html")</script>`)
+    })
 });
+app.post('/api/friends2/:id',(req,res)=>{
+    const id = req.params.id;
+    let sqlOuery = `SELECT * FROM relation1 WHERE status='friends' AND (first=${id} OR second=${id})`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        console.log('Creating friends cookies...');
+        if(results.length === 0)
+        {
+            /*res.send(`<script>alert("Nu ai niciun prieten."); 
+            window.location.replace("/friends.html");</script>`);*/
+            //res.send(`<script>alert('Nu ai niciun prieten.'); window.location.replace("/multiplayer/friend.html")</script>`);
+            res.redirect("/multiplayer/friend.html");
+        }
+        else
+        {
+            const friendIdArray = [];
+            for(let i=0; i<results.length; i++)
+            {
+                if(results[i].first != id){
+                    friendIdArray[i] = results[i].first;
+                }
+                else if(results[i].second != id)
+                {
+                    friendIdArray[i] = results[i].second;
+                }
+                    
+            }
+            let sqlOuery2 = `SELECT * FROM players1 WHERE Id IN (?)`;
+            conn.query(sqlOuery2,[friendIdArray],(err,results2)=>{
+                if(err) throw err;
+                console.log("Creating Cookies...");
+                res.cookie(`results-lenght`,results2.length);
+                for(let i=0; i<results2.length; i++)
+                {
+                    res.cookie(`${i}_id`,results2[i].Id);
+                    res.cookie(`${i}_profilimage`,results2[i].profilimage);
+                    res.cookie(`${i}_name`,results2[i].nume);
+
+                }
+                console.log('aici11');
+                //res.send('ok');
+               // res.send(`<script> window.location.replace("/multiplayer/friend.html")</script>`);
+               res.redirect("/multiplayer/friend.html");
+            })
+        }
+
+    })
+
+});
+app.get('/api/send/request/:id/:fid/:roomnr/:name',(req,res)=>{
+    let id = req.params.id;
+    let fid = req.params.fid;
+    let name = req.params.name;
+    let roomnr = req.params.roomnr;
+    let sqlOuery = `INSERT INTO messages1 (first,second,message,status,subiect) VALUES (${id}, ${fid},"Ai fost invitat sa te joci de catre ${name} in camera ${roomnr}. Intra in sectiunea Instructiune pentru lamuriri.","unread","Invitatie")`;
+    conn.query(sqlOuery,(err,results)=>{
+        if(err) throw err;
+        console.log("mesaj trimis");
+        res.send('ok');
+    })
+})
+//multiplayer
+let clients={};
+let players={};
+
+let unmatched;
+
+let rooms=1;
+let su = undefined;
+let su_answer = undefined;
+let su_question=undefined;
+let su_original=undefined;
+let name= undefined;
+let opponentName= undefined;
+let funmatched;
+let fplayers = {}
+
+/*io.use((socket,next)=>{
+    const token = socket.handshake.query.token;
+    if(token == 'matei')
+    {
+        console.log('user authenticated');
+        next();
+    }
+        
+    else
+    {
+        const err = new Error("not authorized");
+        err.data = { content: "Please retry later" }; 
+        next(err);
+    }
+})*/
+io.on("connection",(socket)=>{
+    console.log(socket.id);
+    console.log('user authenticated');
+    //clients[socket.id] = socket;
+    let name = socket.handshake.query.name;
+    console.log(name);
+    socket.on("disconnect",()=>{
+        console.log("disconnected "+socket.id);
+        delete clients[socket.id];
+        delete players[socket.id];
+        delete fplayers[socket.id];
+        
+        
+        socket.broadcast.emit("player disconnected");
+    });
+    
+    socket.on('friend',()=>{
+        
+        //let players1 ={};
+        /**
+ * Create a new game room and notify the creator of game. 
+ */     
+        socket.on('createGame', function(data){
+            socket.join('room-' + ++rooms);
+            socket.emit('newGame', {name: name, room: 'room-'+rooms});
+            joinFplayers(socket,name);
+        });
+        
+        /**
+         * Connect the Player 2 to the room he requested. Show error if room full.
+         */
+        socket.on('joinGame', function(data){
+            var room = io.sockets.adapter.rooms.has(data.room);
+            console.log("entered");
+            if( room && io.sockets.adapter.rooms.get(data.room).size == 1){
+                socket.join(data.room);
+                joinFplayers(socket,name);
+                console.log(fplayers);
+                console.log("entered");
+                su = sudokuGen(29);
+                su_answer =[...su.question];
+                socket.broadcast.to(data.room).emit('game.begin', {
+                    su_answer:su_answer,
+                    su_question:su.question,
+                    su_original:su.original,
+                    name:fplayers[fplayers[socket.id].opponent].name,
+                    opponentName:fplayers[socket.id].name,
+                });
+                socket.emit('game.begin', {
+                    su_answer:su_answer,
+                    su_question:su.question,
+                    su_original:su.original,
+                    name:fplayers[socket.id].name,
+                    opponentName:fplayers[fplayers[socket.id].opponent].name,
+                });
+            }
+            else {
+            socket.emit('err', {message: 'Sorry, The room is full!'});
+            }
+        });
+        console.log(fplayers);
+        let winner;
+        let loser;
+        socket.on("won",(data)=>{
+            winner=data.name;
+            
+            if(winner == fplayers[socket.id].name)
+            {
+                fopponentOf(socket).emit("lost");
+                socket.emit("won");
+            }
+            else
+            {
+                
+                fopponentOf(socket).emit("won");
+                socket.emit("lost");
+            }
+            
+    
+        });
+        socket.on("lost",(data)=>{
+            loser=data.name;
+            if(loser == fplayers[socket.id].name)
+            {
+                fopponentOf(socket).emit("won");
+                socket.emit("lost");
+            }
+            else
+            {
+                fopponentOf(socket).emit("lost");
+                socket.emit("won");
+            }
+        
+        })     
+    })
+
+    
+   // roomnr++;
+    socket.on('random',()=>{
+        join(socket,name);
+        name=undefined;
+        
+        
+        if(opponentOf(socket))
+        {
+            su = sudokuGen(29);
+            su_answer =[...su.question];
+            console.log(clients[socket.id]);
+            console.log(clients[opponentOf(socket)])
+            
+            socket.emit("game.begin",{
+                su_answer:su_answer,
+                su_question:su.question,
+                su_original:su.original,
+                name:players[socket.id].name,
+                opponentName:players[players[socket.id].opponent].name,
+                /*name:clients[socket.id],
+                opponentName:clients[opponentOf(socket)],*/
+            });
+            opponentOf(socket).emit("game.begin",{
+                su_answer:su_answer,
+                su_question:su.question,
+                su_original:su.original,
+                name:players[players[socket.id].opponent].name,
+                opponentName:players[socket.id].name,
+               /* name:clients[opponentOf(socket)],
+                opponentName:clients[socket.id],*/
+            });
+            
+        }
+        let winner;
+        let loser;
+        
+    
+        socket.on("won",(data)=>{
+            winner=data.name;
+            
+            if(winner == players[socket.id].name)
+            {
+                opponentOf(socket).emit("lost");
+                socket.emit("won");
+            }
+            else
+            {
+                
+                opponentOf(socket).emit("won");
+                socket.emit("lost");
+            }
+            
+    
+        });
+        socket.on("lost",(data)=>{
+            loser=data.name;
+            if(loser == players[socket.id].name)
+            {
+                opponentOf(socket).emit("won");
+                socket.emit("lost");
+            }
+            else
+            {
+                
+                opponentOf(socket).emit("lost");
+                socket.emit("won");
+            }
+        })
+    })
+    
+    
+
+
+    
+});
+const join = (socket,name)=>{
+    players[socket.id] = {
+        opponent:unmatched,
+        socket:socket,
+        name:name
+    };
+    if(unmatched)
+    {
+        players[unmatched].opponent = socket.id;
+        
+        unmatched = null;
+    }
+    else
+    {
+        unmatched = socket.id;
+        
+    }
+}
+const joinFplayers =(socket,name) =>{
+    fplayers[socket.id]={
+        opponent:funmatched,
+        socket:socket,
+        name:name,
+        
+    }
+    if(funmatched)
+    {
+        fplayers[funmatched].opponent = socket.id;
+        funmatched = null;
+        
+    }
+    else
+    {
+        
+        funmatched = socket.id;
+        
+        
+    }
+   
+}
+const opponentOf = (socket) =>{
+    if(!players[socket.id].opponent)
+    {
+        return;
+    }
+    return players[players[socket.id].opponent].socket;
+}
+const fopponentOf = (socket)=>{
+    if(!fplayers[socket.id].opponent)
+    {
+        return;
+    }
+    return fplayers[fplayers[socket.id].opponent].socket;
+}
+//app listens to port 3001
+/*app.listen(3001,()=>{
+    console.log('Server started on port 3001...');
+});*/
+/*io.on('connection',(socket)=>{
+    console.log(socket.id);
+    //clients[socket.id] = socket;
+    let name;
+    let clientsInRoom = 0;
+    socket.on("new player",(data)=>{
+        name=data.name;
+        console.log(name);
+        
+        if (io.sockets.adapter.rooms.has(`${roomnr}`))
+        {
+            clientsInRoom = io.sockets.adapter.rooms.get(`${roomnr}`).size;
+            if(clientsInRoom<2)
+            {
+                players[2] = {
+                    socket:socket,
+                    name:name,
+                }
+                socket.join(`${roomnr}`);
+                
+            }
+            else
+            {
+                roomnr++;
+                players[1] = {
+                    socket:socket,
+                    name:name,
+                }
+                socket.join(`${roomnr}`);
+            }
+        }
+        else
+        {
+            players[1] = {
+                socket:socket,
+                name:name,
+            }
+            socket.join(`${roomnr}`);
+        }
+        
+    })
+    /*players[socket.id] = {
+        socket:socket,
+        name:name,
+    }
+
+    name = undefined;
+    socket.on("disconnect",()=>{
+        console.log("disconnected "+socket.id);
+        delete clients[socket.id];
+        delete players[socket.id];
+        //socket.broadcast.emit("client disconnected " + socket.id);
+        socket.broadcast.emit("player disconnected");
+    });
+    
+    console.log(roomnr);
+    if(io.sockets.adapter.rooms.has(`${roomnr}`))
+        clientsInRoom = io.sockets.adapter.rooms.get(`${roomnr}`).size;
+    console.log(clientsInRoom);
+    if(clientsInRoom==2)
+    {
+        console.log(players);
+        su = sudokuGen(29);
+        su_answer =[...su.question];
+        /*io.to(players[1].socket).emit("game.begin",{
+            su_answer:su_answer,
+            su_question:su.question,
+            su_original:su.original,
+            name:players[1].name,
+            opponentName:players[2].name,
+        });
+        io.to(players[2].socket).emit("game.begin",{
+            su_answer:su_answer,
+            su_question:su.question,
+            su_original:su.original,
+            name:players[2].name,
+            opponentName:players[1].name,
+        })
+        players[1].socket.emit("game.begin",{
+            su_answer:su_answer,
+            su_question:su.question,
+            su_original:su.original,
+            name:players[1].name,
+            opponentName:players[2].name,
+        });
+        console.log('aici');
+        players[2].socket.emit("game.begin",{
+            su_answer:su_answer,
+            su_question:su.question,
+            su_original:su.original,
+            name:players[1].name,
+            opponentName:players[2].name,
+        });
+    }
+    let winner;
+    let loser;
+    
+
+    socket.on("won",(data)=>{
+        winner=data.name;
+        
+        if(winner == players[socket.id].name)
+        {
+            opponentOf(socket).emit("won");
+            socket.emit("lost");
+        }
+        else
+        {
+            opponentOf(socket).emit("lost");
+            socket.emit("won");
+        }
+        
+
+    });
+    socket.on("lost",(data)=>{
+        loser=data.name;
+        if(loser == players[socket.id].name)
+        {
+            opponentOf(socket).emit("lost");
+            socket.emit("won");
+        }
+        else
+        {
+            opponentOf(socket).emit("won");
+            socket.emit("lost");
+        }
+    
+    
+    })
+});*/
+httpServer.listen(3001);

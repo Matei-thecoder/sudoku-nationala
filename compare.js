@@ -23,6 +23,8 @@ window.onload = () =>{
     let uveryhard = getCookie('veryhard');
     let uinsane = getCookie('insane');
     let uinhuman = getCookie('inhuman');
+    let umvr = getCookie('mvr');
+    let umvf = getCookie('mvf');
     
     let fname = getCookie('friend_name');
     fname = fname.replace('%20',' ');
@@ -42,6 +44,8 @@ window.onload = () =>{
     let fveryhard = getCookie('friend_veryhard');
     let finsane = getCookie('friend_insane');
     let finhuman = getCookie('friend_inhuman');
+    let fmvr = getCookie('friend_mvr');
+    let fmvf = getCookie('friend_mvf');
 
     const u_profilimage = document.querySelector('.u_profilimage');
     const u_name = document.querySelector('.u_name');
@@ -51,6 +55,8 @@ window.onload = () =>{
     const u_veryhard = document.querySelector('.u_veryhard');
     const u_insane = document.querySelector('.u_insane');
     const u_inhuman = document.querySelector('.u_inhuman');
+    const u_mvr = document.querySelector('.u_mvr');
+    const u_mvf = document.querySelector('.u_mvf');
 
     const c_profilimage = document.querySelector('.c_profilimage');
     const c_name = document.querySelector('.c_name');
@@ -60,6 +66,8 @@ window.onload = () =>{
     const c_veryhard = document.querySelector('.c_veryhard');
     const c_insane = document.querySelector('.c_insane');
     const c_inhuman = document.querySelector('.c_inhuman');
+    const c_mvr = document.querySelector('.c_mvr');
+    const c_mvf = document.querySelector('.c_mvf')
 
     const f_profilimage = document.querySelector('.f_profilimage');
     const f_name = document.querySelector('.f_name');
@@ -69,6 +77,8 @@ window.onload = () =>{
     const f_veryhard = document.querySelector('.f_veryhard');
     const f_insane = document.querySelector('.f_insane');
     const f_inhuman = document.querySelector('.f_inhuman');
+    const f_mvr = document.querySelector('.f_mvr');
+    const f_mvf = document.querySelector('.f_mvf');
 
     if(uprofilimage ==='icon')
     {
@@ -93,6 +103,8 @@ window.onload = () =>{
     u_veryhard.textContent = uveryhard;
     u_insane.textContent = uinsane;
     u_inhuman.textContent = uinhuman;
+    u_mvr.textContent = umvr;
+    u_mvf.textContent = umvf;
 
     if(fprofilimage ==='icon')
     {
@@ -117,6 +129,8 @@ window.onload = () =>{
     f_veryhard.textContent = fveryhard;
     f_insane.textContent = finsane;
     f_inhuman.textContent = finhuman;
+    f_mvr.textContent = fmvr;
+    f_mvf.textContent =  fmvf;
 
     if(ueasy > feasy)
         c_easy.textContent = '>';
@@ -159,4 +173,16 @@ window.onload = () =>{
         c_inhuman.textContent = '<';
     else
         c_inhuman.textContent = '=';
+    if(umvr > fmvr)
+        c_mvr.textContent = '>';
+    else if (umvr < fmvr)
+        c_mvr.textContent = '<';
+    else
+        c_mvr.textContent = '=';
+    if(umvf > fmvf)
+        c_mvf.textContent = '>';
+    else if (umvf < fmvf)
+        c_mvf.textContent = '<';
+    else
+        c_mvf.textContent = '=';
 }

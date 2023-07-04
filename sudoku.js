@@ -1,3 +1,5 @@
+//const {CONSTANT} = require("./constant.js");
+
 const newGrid = (size) => {
     let arr = new Array(size);
 
@@ -158,7 +160,7 @@ const removeCells = (grid, level) => {
 }
 
 // generate sudoku base on level
-const sudokuGen = (level) => {
+ const sudokuGen = (level) => {
     let sudoku = newGrid(CONSTANT.GRID_SIZE);
     let check = sudokuCreate(sudoku);
     if (check) {

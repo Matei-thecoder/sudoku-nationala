@@ -18,6 +18,8 @@ window.onload = () => {
     const insane_e = document.querySelector(".insane");
     const inhuman_e = document.querySelector(".inhuman");
     const picture_e = document.querySelector("#picture");
+    const mvr_e = document.querySelector('.mvr');
+    const mvf_e = document.querySelector('.mvf');
     let id_c = getCookie('id');
     let name = getCookie('name');
     name = name.replace("%20",' ');
@@ -39,6 +41,8 @@ window.onload = () => {
     let insane_c = getCookie('insane');
     let inhuman_c = getCookie('inhuman');
     let picture_c = getCookie('profil-image');
+    let mvr_c=getCookie('mvr');
+    let mvf_c = getCookie('mvf');
     if(picture_c ==='icon')
     {
         let icon =  document.createElement('span');
@@ -69,6 +73,8 @@ window.onload = () => {
     veryhard_e.textContent = `${veryharc_c}.`;
     insane_e.textContent = `${insane_c}.`;
     inhuman_e.textContent = `${inhuman_c}.`;
+    mvr_e.textContent=`${mvr_c}`;
+    mvf_e.textContent = `${mvf_c}`;
 
 };
 
